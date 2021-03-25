@@ -10,7 +10,8 @@ Any and all comments and/or suggestions are appreciated.
 
 The script depends on:
 
-1: wget 2: convert utility from the imagemagick package
+1: wget
+2: convert utility from the imagemagick package
 
 Usage:
 ./issuudl \<path to issuu publication\>
