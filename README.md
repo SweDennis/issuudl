@@ -14,9 +14,8 @@ The script depends on:
 2: convert utility from the imagemagick package
 
 Usage:
-[code]
-./issuudl <path to issuu publication>
-[/code]
+
+"./issuudl <path to issuu publication>"
   
 It downloads all included .jpg files to a temp directory, and cleans up after itself.
 Convert does No compression of the downloaded files, I left it at that to perhaps ease the job for any OCR software should you want to use that.
