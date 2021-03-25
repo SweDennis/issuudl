@@ -15,10 +15,10 @@ The script depends on:
 
 Usage:
 
-"./issuudl <path to issuu publication>"
+./issuudl \<path to issuu publication\>
   
 It downloads all included .jpg files to a temp directory, and cleans up after itself.
 Convert does No compression of the downloaded files, I left it at that to perhaps ease the job for any OCR software should you want to use that.
-If wanted, a "-quality <number>" can be added to the convert command
+If wanted, a "-quality \<number\>" can be added to the convert command
   
 Tested with gawk 5.0.1, but ought to work from at least 4.1, but, as I say, not tested.
