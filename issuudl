@@ -1,0 +1,22 @@
+#!/usr/bin/gawk -f
+
+BEGIN {
+	while(("wget --quiet -O- "ARGV[1]) | getline) {
+		if($1 == "window.__INITIAL_STATE__") {
+			a=split($0, b, ",")
+			for(c=1; c <= a; c++) {
+				gsub("\"", "", b[c])
+				split(b[c], d, ":")
+				if(d[1] == "title" && ("title" in e)) { continue }
+				e[d[1]]=d[2]
+			}
+			break
+		}
+	}
+	"mktemp -d" | getline f
+	for(g = e["initialPageNumber"]; g <= e["pageCount"]; g++) {
+		system(("wget --quiet -P "f" https://image.isu.pub/"e["documentId"]"/jpg/page_"g".jpg"))
+	}
+	system(("convert $(for h in $(seq 1 "e["pageCount"]"); do echo "f"/page_${h}.jpg; done) \""e["title"]".pdf\""))
+	system(("rm -rf "f))
+}
