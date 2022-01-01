@@ -14,7 +14,7 @@ BEGIN {
         }
 
         "mktemp -d" | getline f
-		system(("for g in $(seq "1" "e["pageCount"]"); do wget --quiet -P "f" https://image.isu.pub/"e["revisionId"]"-"e["publicationId"]"/jpg/page_${g}.jpg; done"))
-		system(("convert $(for g in $(seq "1" "e["pageCount"]"); do echo "f"/page_${g}.jpg; done) \""e["title"]".pdf\""))
+	system(("for g in $(seq "1" "e["pageCount"]"); do wget --quiet -P "f" https://image.isu.pub/"e["revisionId"]"-"e["publicationId"]"/jpg/page_${g}.jpg; done"))
+	system(("convert $(for g in $(seq "1" "e["pageCount"]"); do echo "f"/page_${g}.jpg; done) \""e["title"]".pdf\""))
         system(("rm -rf "f))
 }
