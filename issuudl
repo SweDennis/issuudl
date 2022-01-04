@@ -5,7 +5,7 @@ BEGIN {
 		a = split($0, b, "[;|:|&|,]")
 		for(c = 1; c <= a; c++) {
 			d[b[c]] = b[c + (b[c] == "pageCount" ? 3 : 5)]
-			if(b[c] == "title" && ++titleCnt == 1) break
+			if(b[c] == "title") break
 		}
 	}
 
