@@ -4,8 +4,8 @@ BEGIN {
 	while(("wget --quiet -O- "ARGV[1]) | getline) {
 		a = split($0, b, "[;|:|&|,]")
 		for(c = 1; c <= a; c++) {
-			if(b[c] == "title" && ++titleCnt > 1) break
 			d[b[c]] = b[c + (b[c] == "pageCount" ? 3 : 5)]
+			if(b[c] == "title" && ++titleCnt == 1) break
 		}
 	}
 
