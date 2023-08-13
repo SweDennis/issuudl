@@ -1,16 +1,25 @@
-#!/usr/bin/gawk -f
+#! /usr/bin/gawk -f
 
 BEGIN {
-	while(("wget --quiet -O- "ARGV[1]) | getline) {
-		a = split($0, b, "[;:&,]")
-		for(c = 1; c <= a; c++) {
-			d[b[c]] = b[c + (b[c] == "pageCount" ? 3 : 5)]
-			if(b[c] == "title") break
-		}
-	}
+    title = ARGV[2]
+    while(("wget --quiet -O- "ARGV[1]) | getline) {
+        a = split($0, b, /[;:&,]/)
+        for(c = 1; c <= a; c++) {
+            d[b[c]] = b[c + (b[c] == "pageCount" ? 3 : 5)]
+            if(b[c] == "title") break
+        }
+    }
 
-	"mktemp -d" | getline e
-	system(("for f in $(seq "1" "d["pageCount"]"); do wget --quiet -P "e" https://image.isu.pub/"d["revisionId"]"-"d["publicationId"]"/jpg/page_${f}.jpg; done"))
-	system(("convert $(for f in $(seq "1" "d["pageCount"]"); do echo "e"/page_${f}.jpg; done) \""d["title"]".pdf\""))
-	system(("rm -rf "e))
+    "mktemp -d" | getline e
+    system(("for f in $(seq 1 "d["pageCount"]"); do wget --quiet -P "e" https://image.isu.pub/"d["revisionId"]"-"d["publicationId"]"/jpg/page_${f}.jpg; done"))
+    conCmd = "convert -quality 80"
+    for(f = 1; f <= d["pageCount"]; f++) {
+        pref = ""
+        ("file "e"/page_"f".jpg") | getline
+        pref = ($5 ~ /Web\/P/) ? "webp:" : ""
+        conCmd = (conCmd" "pref""e"/page_"f".jpg")
+    }
+    conCmd = (conCmd" \""d["title"]"\".pdf 2>/dev/null")
+    system(conCmd)
+    system(("rm -rf "e))
 }
