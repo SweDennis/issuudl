@@ -1,23 +1,32 @@
 #! /usr/bin/gawk -f
 
 BEGIN {
-    title = ARGV[2]
-    while(("wget --quiet -O- "ARGV[1]) | getline) {
-        a = split($0, b, /[;:&,]/)
-        for(c = 1; c <= a; c++) {
-            d[b[c]] = b[c + (b[c] == "pageCount" ? 3 : 5)]
-            if(b[c] == "title") break
+    url      =  ARGV[1]
+    UA       = "'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0'"
+    cmd      = "curl -s -A "UA" "url
+    matchPat = @/pageCount\\":([[:digit:]]+),\\"publicationId\\":\\"([[:alnum:]]+)\\",\\"revisionId\\":\\"([[:digit:]]+)\\",\\"title\\":\\"([[:alnum:][:blank:],]+)/
+
+    while(cmd | getline) {
+        if(match($0, matchPat, resArray)) {
+           pageCount     = resArray[1]
+           publicationId = resArray[2]
+           revisionId    = resArray[3]
+           title         = resArray[4]
         }
     }
-
-    "mktemp -d" | getline e
-    system(("for f in $(seq 1 "d["pageCount"]"); do wget --quiet -P "e" https://image.isu.pub/"d["revisionId"]"-"d["publicationId"]"/jpg/page_${f}.jpg; done"))
-    conCmd = "convert -quality 80"
-    for(f = 1; f <= d["pageCount"]; f++) {
-        ("file "e"/page_"f".jpg") | getline
-        conCmd = (conCmd" "(($5 ~ /Web\/P/) ? "webp:" : "")e"/page_"f".jpg")
+    "mktemp -d" | getline tmpDir 
+    for(i = 1; i <= pageCount; i++) {
+        image = "https://image.isu.pub/"revisionId"-"publicationId"/jpg/page_"i".jpg"
+        system("curl -s -A "UA" --output-dir "tmpDir" -O "image)
     }
-    conCmd = (conCmd" \""d["title"]"\".pdf 2>/dev/null")
+
+    conCmd = "convert -quality 70"
+    for(i = 1; i <= pageCount; i++) {
+        "file "tmpDir"/page_"i".jpg" | getline fileInfo
+        prefix = fileInfo ~ /Web\/P/ ? "webp:" : ""
+        conCmd = conCmd" "prefix tmpDir"/page_"i".jpg"
+    }
+    conCmd = conCmd" \""title".pdf\" 2>/dev/null"
     system(conCmd)
-    system(("rm -rf "e))
+    system("rm -r "tmpDir)
 }
