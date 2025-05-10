@@ -10,7 +10,7 @@ Any and all comments and/or suggestions are appreciated.
 
 The script depends on:
 
-1. wget
+1. curl
 2. convert utility from the imagemagick package
 
 Usage:
@@ -18,7 +18,7 @@ Usage:
 ./issuudl \<path to issuu publication\>
   
 It downloads all included .jpg files to a temp directory, and cleans up after itself.
-Convert does No compression of the downloaded files, I left it at that to perhaps ease the job for any OCR software should you want to use that.
-If wanted, a "-quality \<number\>" can be added to the convert command
+Convert does some compression of the downloaded files, I left it at that to perhaps ease the job for any OCR software should you want to use that.
+If wanted, the "-quality \<number\>" can be changed in the convert command
   
 Tested with gawk 5.0.1, but ought to work from at least 4.1, but, as I say, not tested.
